@@ -5,6 +5,7 @@ import tensorflow as tf
 from pybaseball import parks
 from pybaseball import playerid_lookup
 from pybaseball import statcast_batter
+from pybaseball import batting_stats
 from matplotlib import pyplot
 import pandas as pd
 import numpy as np
@@ -15,36 +16,29 @@ import geneNewData
 from precode import *
 
 #using pybaseball to explore Pete Crow-Armstrong's performance in the 2025 season
-data = batting_stats(2025)
 PCA = playerid_lookup("Crow-Armstrong")
-print ("Player: ", PCA['key_mlbam'].values)
-'''
-Data:  Index(['IDfg', 'Season', 'Name', 'Team', 'Age', 'G', 'AB', 'PA', 'H', '1B',
-       ...
-       'maxEV', 'HardHit', 'HardHit%', 'Events', 'CStr%', 'CSW%', 'xBA',
-       'xSLG', 'xwOBA', 'L-WAR'],'''
-PCA_stats = statcast_batter('2025-03-18','2025-10-11',PCA['key_mlbam'].values[0])
-#pyplot.plot(PCA_stats)
-'''Index(['pitch_type', 'game_date', 'release_speed', 'release_pos_x',
-       'release_pos_z', 'player_name', 'batter', 'pitcher', 'events',
-       'description',
-       ...
-       'batter_days_until_next_game', 'api_break_z_with_gravity',
-       'api_break_x_arm', 'api_break_x_batter_in', 'arm_angle', 'attack_angle',
-       'attack_direction', 'swing_path_tilt',
-       'intercept_ball_minus_batter_pos_x_inches',
-       'intercept_ball_minus_batter_pos_y_inches'],'''
-pitch_type_dict = PCA_stats['pitch_type'].to_dict()
+#Index(['name_last', 'name_first', 'key_mlbam', 'key_retro', 'key_bbref','key_fangraphs', 'mlb_played_first', 'mlb_played_last'],dtype='object')
+#['IDfg', 'Season', 'Name', 'Team', 'Age', 'G', 'AB', 'PA', 'H', '1B', '2B', '3B', 'HR', 'R', 'RBI', 'BB', 'IBB', 'SO', 'HBP', 'SF', 'SH', 'GDP', 'SB', 'CS', 'AVG', 'GB', 'FB', 'LD', 'IFFB', 'Pitches', 'Balls', 'Strikes', 'IFH', 'BU', 'BUH', 'BB%', 'K%', 'BB/K', 'OBP', 'SLG', 'OPS', 'ISO', 'BABIP', 'GB/FB', 'LD%', 'GB%', 'FB%', 'IFFB%', 'HR/FB', 'IFH%', 'BUH%', 'wOBA', 'wRAA', 'wRC', 'Bat', 'Fld', 'Rep', 'Pos', 'RAR', 'WAR', 'Dol', 'Spd', 'wRC+', 'WPA', '-WPA', '+WPA', 'RE24', 'REW', 'pLI', 'phLI', 'PH', 'WPA/LI', 'Clutch', 'FB% (Pitch)', 'FBv', 'SL%', 'SLv', 'CT%', 'CTv', 'CB%', 'CBv', 'CH%', 'CHv', 'SF%', 'SFv', 'KN%', 'KNv', 'XX%', 'PO%', 'wFB', 'wSL', 'wCT', 'wCB', 'wCH', 'wSF', 'wKN', 'wFB/C', 'wSL/C', 'wCT/C', 'wCB/C', 'wCH/C', 'wSF/C', 'wKN/C', 'O-Swing%', 'Z-Swing%', 'Swing%', 'O-Contact%', 'Z-Contact%', 'Contact%', 'Zone%', 'F-Strike%', 'SwStr%', 'BsR', 'FA% (sc)', 'FT% (sc)', 'FC% (sc)', 'FS% (sc)', 'FO% (sc)', 'SI% (sc)', 'SL% (sc)', 'CU% (sc)', 'KC% (sc)', 'EP% (sc)', 'CH% (sc)', 'SC% (sc)', 'KN% (sc)', 'UN% (sc)', 'vFA (sc)', 'vFT (sc)', 'vFC (sc)', 'vFS (sc)', 'vFO (sc)', 'vSI (sc)', 'vSL (sc)', 'vCU (sc)', 'vKC (sc)', 'vEP (sc)', 'vCH (sc)', 'vSC (sc)', 'vKN (sc)', 'FA-X (sc)', 'FT-X (sc)', 'FC-X (sc)', 'FS-X (sc)', 'FO-X (sc)', 'SI-X (sc)', 'SL-X (sc)', 'CU-X (sc)', 'KC-X (sc)', 'EP-X (sc)', 'CH-X (sc)', 'SC-X (sc)', 'KN-X (sc)', 'FA-Z (sc)', 'FT-Z (sc)', 'FC-Z (sc)', 'FS-Z (sc)', 'FO-Z (sc)', 'SI-Z (sc)', 'SL-Z (sc)', 'CU-Z (sc)', 'KC-Z (sc)', 'EP-Z (sc)', 'CH-Z (sc)', 'SC-Z (sc)', 'KN-Z (sc)', 'wFA (sc)', 'wFT (sc)', 'wFC (sc)', 'wFS (sc)', 'wFO (sc)', 'wSI (sc)', 'wSL (sc)', 'wCU (sc)', 'wKC (sc)', 'wEP (sc)', 'wCH (sc)', 'wSC (sc)', 'wKN (sc)', 'wFA/C (sc)', 'wFT/C (sc)', 'wFC/C (sc)', 'wFS/C (sc)', 'wFO/C (sc)', 'wSI/C (sc)', 'wSL/C (sc)', 'wCU/C (sc)', 'wKC/C (sc)', 'wEP/C (sc)', 'wCH/C (sc)', 'wSC/C (sc)', 'wKN/C (sc)', 'O-Swing% (sc)', 'Z-Swing% (sc)', 'Swing% (sc)', 'O-Contact% (sc)', 'Z-Contact% (sc)', 'Contact% (sc)', 'Zone% (sc)', 'Pace', 'Def', 'wSB', 'UBR', 'Age Rng', 'Off', 'Lg', 'wGDP', 'Pull%', 'Cent%', 'Oppo%', 'Soft%', 'Med%', 'Hard%', 'TTO%', 'CH% (pi)', 'CS% (pi)', 'CU% (pi)', 'FA% (pi)', 'FC% (pi)', 'FS% (pi)', 'KN% (pi)', 'SB% (pi)', 'SI% (pi)', 'SL% (pi)', 'XX% (pi)', 'vCH (pi)', 'vCS (pi)', 'vCU (pi)', 'vFA (pi)', 'vFC (pi)', 'vFS (pi)', 'vKN (pi)', 'vSB (pi)', 'vSI (pi)', 'vSL (pi)', 'vXX (pi)', 'CH-X (pi)', 'CS-X (pi)', 'CU-X (pi)', 'FA-X (pi)', 'FC-X (pi)', 'FS-X (pi)', 'KN-X (pi)', 'SB-X (pi)', 'SI-X (pi)', 'SL-X (pi)', 'XX-X (pi)', 'CH-Z (pi)', 'CS-Z (pi)', 'CU-Z (pi)', 'FA-Z (pi)', 'FC-Z (pi)', 'FS-Z (pi)', 'KN-Z (pi)', 'SB-Z (pi)', 'SI-Z (pi)', 'SL-Z (pi)', 'XX-Z (pi)', 'wCH (pi)', 'wCS (pi)', 'wCU (pi)', 'wFA (pi)', 'wFC (pi)', 'wFS (pi)', 'wKN (pi)', 'wSB (pi)', 'wSI (pi)', 'wSL (pi)', 'wXX (pi)', 'wCH/C (pi)', 'wCS/C (pi)', 'wCU/C (pi)', 'wFA/C (pi)', 'wFC/C (pi)', 'wFS/C (pi)', 'wKN/C (pi)', 'wSB/C (pi)', 'wSI/C (pi)', 'wSL/C (pi)', 'wXX/C (pi)', 'O-Swing% (pi)', 'Z-Swing% (pi)', 'Swing% (pi)', 'O-Contact% (pi)', 'Z-Contact% (pi)', 'Contact% (pi)', 'Zone% (pi)', 'Pace (pi)', 'FRM', 'AVG+', 'BB%+', 'K%+', 'OBP+', 'SLG+', 'ISO+', 'BABIP+', 'LD+%', 'GB%+', 'FB%+', 'HR/FB%+', 'Pull%+', 'Cent%+', 'Oppo%+', 'Soft%+', 'Med%+', 'Hard%+', 'EV', 'LA', 'Barrels', 'Barrel%', 'maxEV', 'HardHit', 'HardHit%', 'Events', 'CStr%', 'CSW%', 'xBA', 'xSLG', 'xwOBA', 'L-WAR']
+Stats = batting_stats(PCA['mlb_played_first'],PCA['mlb_played_last'])
+PCA_Stat_Cast = statcast_batter('2025-03-18','2025-10-11',PCA['key_mlbam'].values[0])
+#PCA_Stat_Cast.to_csv("PCA_Stat_Cast.csv")
+PCA_events = PCA_Stat_Cast.groupby(['events','pitch_type'])
+#['pitch_type', 'game_date', 'release_speed', 'release_pos_x', 'release_pos_z', 'player_name', 'batter', 'pitcher', 'events', 'description', 'spin_dir', 'spin_rate_deprecated', 'break_angle_deprecated', 'break_length_deprecated', 'zone', 'des', 'game_type', 'stand', 'p_throws', 'home_team', 'away_team', 'type', 'hit_location', 'bb_type', 'balls', 'strikes', 'game_year', 'pfx_x', 'pfx_z', 'plate_x', 'plate_z', 'on_3b', 'on_2b', 'on_1b', 'outs_when_up', 'inning', 'inning_topbot', 'hc_x', 'hc_y', 'tfs_deprecated', 'tfs_zulu_deprecated', 'umpire', 'sv_id', 'vx0', 'vy0', 'vz0', 'ax', 'ay', 'az', 'sz_top', 'sz_bot', 'hit_distance_sc', 'launch_speed', 'launch_angle', 'effective_speed', 'release_spin_rate', 'release_extension', 'game_pk', 'fielder_2', 'fielder_3', 'fielder_4', 'fielder_5', 'fielder_6', 'fielder_7', 'fielder_8', 'fielder_9', 'release_pos_y', 'estimated_ba_using_speedangle', 'estimated_woba_using_speedangle', 'woba_value', 'woba_denom', 'babip_value', 'iso_value', 'launch_speed_angle', 'at_bat_number', 'pitch_number', 'pitch_name', 'home_score', 'away_score', 'bat_score', 'fld_score', 'post_away_score', 'post_home_score', 'post_bat_score', 'post_fld_score', 'if_fielding_alignment', 'of_fielding_alignment', 'spin_axis', 'delta_home_win_exp', 'delta_run_exp', 'bat_speed', 'swing_length', 'estimated_slg_using_speedangle', 'delta_pitcher_run_exp', 'hyper_speed', 'home_score_diff', 'bat_score_diff', 'home_win_exp', 'bat_win_exp', 'age_pit_legacy', 'age_bat_legacy', 'age_pit', 'age_bat', 'n_thruorder_pitcher', 'n_priorpa_thisgame_player_at_bat', 'pitcher_days_since_prev_game', 'batter_days_since_prev_game', 'pitcher_days_until_next_game', 'batter_days_until_next_game', 'api_break_z_with_gravity', 'api_break_x_arm', 'api_break_x_batter_in', 'arm_angle', 'attack_angle', 'attack_direction', 'swing_path_tilt', 'intercept_ball_minus_batter_pos_x_inches', 'intercept_ball_minus_batter_pos_y_inches']
+#pyplot.plot(PCA_Stat_Cast)
+pitch_type_dict = PCA_Stat_Cast['pitch_type'].to_dict()
+#arm_angle = PCA_Stat_Cast['arm_angle'].to_dict()
 pitch_type_description = {}
+pitch_type_event = {}
 for i in pitch_type_dict.keys():
-    j = PCA_stats['description'][i]
+    j = PCA_Stat_Cast['description'][i]
+    k = PCA_Stat_Cast['event'][i]
     tuple = (pitch_type_dict[i], j)
     if tuple not in pitch_type_description.keys():
         pitch_type_description[tuple] = 0
     else:
         pitch_type_description[tuple] += 1
 
-sub_train_images, sub_train_labels, sub_test_images, sub_test_labels = init_subset('1670')
+'''sub_train_images, sub_train_labels, sub_test_images, sub_test_labels = init_subset('1670')
 mnist = tf.keras.datasets.mnist
 
 (x_train, y_train),(x_test, y_test) = mnist.load_data()
@@ -63,13 +57,13 @@ model.compile(optimizer='adam',
 
 model.fit(x_train, y_train, epochs=5)
 model.evaluate(x_test, y_test)
-print (model.variables)
+print (model.variables)'''
 print (pitch_type_description)
 print (len(pitch_type_description))
 #print (data['Team'])
 
 #Density Estimation and Classification
-def main():
+'''def main():
     myID = '1670'  # change to last 4 digit of your studentID
     geneNewData.geneData(myID)
     Numpyfile0 = scipy.io.loadmat('digit0_stu_train' + myID + '.mat')
@@ -173,5 +167,5 @@ def NB(test, avg, omega):
     exponent = -0.5 * (((test - avg) / omega) ** 2)
     e = math.e ** (exponent)
     denominator = omega * math.sqrt(2 * math.pi)
-    return e / denominator
+    return e / denominator'''
 
